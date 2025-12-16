@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pateros Technological college Queue Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#005a32">
+<link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+
+	
+</head>
+<body>
+    <!-- Background Video -->
+    <video class="background-video" autoplay muted loop>
+        <source src="https://www.paterostechnologicalcollege.edu.ph/ASSETS/VIDEOS/PTC-BG-FINAL.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div class="container">
+        <!-- Login removed for kiosk simplicity -->
+
+        <!-- Navigation Tabs -->
+        <div class="navbar">
+            <div class="nav-brand">
+                <img src="https://www.paterostechnologicalcollege.edu.ph/ASSETS/IMAGES/LOGO/logo-ptc.png" alt="PTC Logo" class="navbar-logo">
+                <span>Pateros Technological College</span>
+            </div>
+                <div class="nav-tabs">
+                <button class="nav-btn active" data-tab="kiosk">Submit Request</button>
+                <button class="nav-btn" data-tab="staff">Service Counter</button>
+                <button class="nav-btn" data-tab="display">Display</button>
+                <button class="nav-btn" data-tab="admin">Admin Dashboard</button>
+                <!-- logout removed for kiosk flow -->
+            </div>
+        </div>
+
+        <!-- CUSTOMER/KIOSK SECTION -->
+        <section id="kiosk-tab" class="tab-content active">
+            <div class="kiosk-container">
+                <div class="kiosk-header">
+                
+                </div>
+
+                <!-- Step 1: Customer Information -->
+                <div id="step-customer-info" class="kiosk-step active">
+                    <div class="form-wrapper">
+                        <div class="form-header">
+                            <h1>Document Request Form</h1>
+                            <p>Fill in your information to request a document</p>
+                        </div>
+                        <form id="customer-form" class="kiosk-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Full Name <span class="required">*</span></label>
+                                    <input type="text" id="customer-name" placeholder="Enter Full Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email <span class="required">*</span></label>
+                                    <input type="email" id="customer-email" placeholder="Enter Email Address" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Student ID <span class="required">*</span></label>
+                                    <input type="text" id="customer-id" placeholder="Enter Student ID" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Course/Program <span class="required">*</span></label>
+                                    <input type="text" id="customer-course" placeholder="Enter Course" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Document Type <span class="required">*</span></label>
+                                    <select id="customer-type" required>
+                                        <option value="">Select Document...</option>
+                                        <option value="Enrollment Certificate">Enrollment Certificate</option>
+                                        <option value="Transcript of Records">Transcript of Records</option>
+                                        <option value="Good Moral Certificate">Good Moral Certificate</option>
+                                        <option value="Diploma/Certificate">Diploma/Certificate</option>
+                                        <option value="Fee Payment">Fee Payment</option>
+                                        <option value="School ID Replacement">School ID Replacement</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Fee payment options (hidden until Fee Payment is selected) -->
+                            <div class="form-row fee-options hidden" id="fee-options" style="display:none;">
+                                <div class="form-group">
+                                    <label>Select Fee Item</label>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:10px;">
+                                        <button type="button" class="fee-option-btn transaction-type-btn" data-name="Tuition Fee" data-price="5000">Tuition Fee — ₱5,000</button>
+                                        <button type="button" class="fee-option-btn transaction-type-btn" data-name="Activity Fee" data-price="200">Activity Fee — ₱200</button>
+                                        <button type="button" class="fee-option-btn transaction-type-btn" data-name="Uniform & Materials" data-price="1500">Uniform & Materials — ₱1,500</button>
+                                        <button type="button" class="fee-option-btn transaction-type-btn" data-name="Installment Payment" data-price="Varies">Installment Payment — Varies</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="selected-fee-input" name="selected_fee" value="">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Purpose of Request <span class="required">*</span></label>
+                                    <textarea id="customer-purpose" placeholder="Enter purpose of transaction" required></textarea>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-continue" onclick="queueSystem.goToStep('transaction-type')">Continue →</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Step 2: Transaction Type Selection -->
+                <div id="step-transaction-type" class="kiosk-step">
+                    <div class="transaction-section">
+                        <h2>🏪 Select Transaction Type</h2>
+                        <p>Choose the service you need</p>
+                        
+                        <div class="transaction-categories">
+                            <div class="transaction-category">
+                                <div class="category-header" onclick="queueSystem.toggleCategory(this)">
+                                    <span class="category-icon">🎓</span>
+                                    <span class="category-title">Admission & Enrollment</span>
+                                    <span class="toggle-icon">▼</span>
+                                </div>
+                                <div class="category-items" style="display: none;">
+                                    <button class="transaction-type-btn" data-transaction="New Student Admission">New Student Admission</button>
+                                    <button class="transaction-type-btn" data-transaction="Transfer Enrollment">Transfer Enrollment</button>
+                                    <button class="transaction-type-btn" data-transaction="Grade Level Upgrade">Grade Level Upgrade</button>
+                                    <button class="transaction-type-btn" data-transaction="Reenrollment">Reenrollment</button>
+                                </div>
+                            </div>
+
+                            <div class="transaction-category">
+                                <div class="category-header" onclick="queueSystem.toggleCategory(this)">
+                                    <span class="category-icon">💰</span>
+                                    <span class="category-title">Fee Payment</span>
+                                    <span class="toggle-icon">▼</span>
+                                </div>
+                                <div class="category-items" style="display: none;">
+                                    <button class="transaction-type-btn" data-transaction="Tuition Fee Payment">Tuition Fee Payment</button>
+                                    <button class="transaction-type-btn" data-transaction="Activity Fee Payment">Activity Fee Payment</button>
+                                    <button class="transaction-type-btn" data-transaction="Uniform & Materials">Uniform & Materials</button>
+                                    <button class="transaction-type-btn" data-transaction="Installment Payment">Installment Payment</button>
+                                </div>
+                            </div>
+
+                            <div class="transaction-category">
+                                <div class="category-header" onclick="queueSystem.toggleCategory(this)">
+                                    <span class="category-icon">👨‍🏫</span>
+                                    <span class="category-title">Academic Services</span>
+                                    <span class="toggle-icon">▼</span>
+                                </div>
+                                <div class="category-items" style="display: none;">
+                                    <button class="transaction-type-btn" data-transaction="Academic Counseling">Academic Counseling</button>
+                                    <button class="transaction-type-btn" data-transaction="Grade Inquiry">Grade Inquiry</button>
+                                    <button class="transaction-type-btn" data-transaction="Subject Registration">Subject Registration</button>
+                                    <button class="transaction-type-btn" data-transaction="Tutorial Service">Tutorial Service</button>
+                                </div>
+                            </div>
+
+                            <div class="transaction-category">
+                                <div class="category-header" onclick="queueSystem.toggleCategory(this)">
+                                    <span class="category-icon">📄</span>
+                                    <span class="category-title">Document Requests</span>
+                                    <span class="toggle-icon">▼</span>
+                                </div>
+                                <div class="category-items" style="display: none;">
+                                    <button class="transaction-type-btn" data-transaction="Diploma/Certificate Request">Diploma/Certificate Request</button>
+                                    <button class="transaction-type-btn" data-transaction="Transcript of Records">Transcript of Records</button>
+                                    <button class="transaction-type-btn" data-transaction="Good Moral Certificate">Good Moral Certificate</button>
+                                    <button class="transaction-type-btn" data-transaction="School ID Replacement">School ID Replacement</button>
+                                </div>
+                            </div>
+
+                            <div class="transaction-category">
+                                <div class="category-header" onclick="queueSystem.toggleCategory(this)">
+                                    <span class="category-icon">🏥</span>
+                                    <span class="category-title">Health & Wellness</span>
+                                    <span class="toggle-icon">▼</span>
+                                </div>
+                                <div class="category-items" style="display: none;">
+                                    <button class="transaction-type-btn" data-transaction="Medical Consultation">Medical Consultation</button>
+                                    <button class="transaction-type-btn" data-transaction="Dental Service">Dental Service</button>
+                                    <button class="transaction-type-btn" data-transaction="Vision Screening">Vision Screening</button>
+                                    <button class="transaction-type-btn" data-transaction="Health Certificate">Health Certificate</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button type="button" class="btn btn-secondary" onclick="queueSystem.goToStep('customer-info')">← Back</button>
+                        </div>
+                    </div>
+                </div>
+
+               
+
+                <!-- Step 4: Queue Number Display -->
+                <div id="step-queue-display" class="kiosk-step">
+                    <div class="queue-receipt">
+                        <div class="receipt-header">
+                            <h2> Queue Number </h2>
+                        </div>
+                        
+                        <div class="queue-number-display">
+                            <div class="queue-label">Your Queue Number</div>
+                            <div class="queue-number-large" id="generated-queue">A-001</div>
+                        </div>
+
+                        <div class="transaction-summary">
+                            <div class="summary-item">
+                                <span class="summary-label">Name:</span>
+                                <span class="summary-value" id="display-name">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">ID:</span>
+                                <span class="summary-value" id="display-id">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Transaction Type:</span>
+                                <span class="summary-value" id="display-transaction">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Price:</span>
+                                <span class="summary-value" id="display-price">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Category:</span>
+                                <span class="summary-value" id="display-priority">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Time Generated:</span>
+                                <span class="summary-value" id="display-time">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Position in Queue:</span>
+                                <span class="summary-value" id="display-position">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Est. Wait Time:</span>
+                                <span class="summary-value" id="display-wait-time">-</span>
+                            </div>
+                        </div>
+
+                        <div class="queue-status-info">
+                            <h3>Real-Time Queue Status</h3>
+                            <div class="queue-status-grid">
+                                <div class="status-card">
+                                    <div class="status-label">Ahead of You</div>
+                                    <div class="status-value" id="ahead-count">0</div>
+                                </div>
+                                <div class="status-card">
+                                    <div class="status-label">Being Served</div>
+                                    <div class="status-value" id="serving-count">0</div>
+                                </div>
+                                <div class="status-card">
+                                    <div class="status-label">Total Waiting</div>
+                                    <div class="status-value" id="total-waiting">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="queue-actions">
+                            <button class="btn btn-primary btn-large" onclick="queueSystem.printTicket()">🖨️ Print Ticket</button>
+                            <button class="btn btn-secondary btn-large" onclick="queueSystem.resetKioskDisplay()">↻ New Transaction</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       
+
+        <!-- SERVICE COUNTER SECTION -->
+        <section id="staff-tab" class="tab-content">
+            <div class="section-header">
+                <h2>Service Counter</h2>
+                <p>Manage customer service and queue progress</p>
+            </div>
+
+            <div class="counter-container">
+                <div class="counter-select">
+                    <label>Select Counter:</label>
+                    <select id="counter-select">
+                        <option value="Counter 1">Counter 1</option>
+                        <option value="Counter 2">Counter 2</option>
+                        <option value="Counter 3">Counter 3</option>
+                    </select>
+                </div>
+
+                <div class="current-customer">
+                    <h3>Now Serving</h3>
+                    <div class="serving-display">
+                        <div id="current-queue-display">-</div>
+                        <div id="current-service-display" class="service-name">-</div>
+                    </div>
+                </div>
+
+                <div class="service-controls">
+                    <button id="call-next-btn" class="btn btn-success"> Call Next Customer</button>
+                    <button id="complete-btn" class="btn btn-info">Mark as Complete</button>
+                    <button id="no-show-btn" class="btn btn-warning"> No Show</button>
+                </div>
+
+                <div class="queue-list">
+                    <h3>Waiting Queue</h3>
+                    <div id="waiting-queue-list" class="queue-items">
+                        <div class="empty-state">No customers waiting</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DISPLAY BOARD SECTION -->
+        <section id="display-tab" class="tab-content">
+            <div class="display-board">
+                <div class="board-header-new">
+                    <h1>Queue Display</h1>
+                    <p>PATEROS TECHNOLOGICAL COLLEGE</p>
+                    <div class="time-info">
+                        <div class="current-time" id="board-time">06:31 PM</div>
+                        <div class="current-date" id="board-date">Monday, December 15, 2025</div>
+                    </div>
+                </div>
+
+                <div class="board-content-new">
+                    <div class="now-serving-card">
+                        <div class="serving-header">Now Serving</div>
+                        <div class="serving-content">
+                            <div class="status-badge">SERVING NOW</div>
+                            <div class="queue-number-huge" id="now-serving-queue">-</div>
+                            <div class="customer-info">
+                                <div class="customer-name" id="now-serving-name">-</div>
+                                <div class="customer-service" id="now-serving-service">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="next-queue-card">
+                        <div class="next-header">Next in Line</div>
+                        <div id="next-queue-display-new" class="next-list-new">
+                            <div class="empty-state">No queue</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN DASHBOARD -->
+        <section id="admin-tab" class="tab-content">
+            <div class="admin-header">
+                <h2>Admin Dashboard</h2>
+                <p>Monitor system performance, operational efficiency, and queue logs</p>
+            </div>
+
+            <div class="admin-container">
+
+                <div class="statistics">
+                    <div class="stat-card">
+                        <div class="stat-icon"></div>
+                        <div class="stat-content">
+                            <div class="stat-label">Total Customers</div>
+                            <div class="stat-value" id="total-customers">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"></div>
+                        <div class="stat-content">
+                            <div class="stat-label">Waiting</div>
+                            <div class="stat-value" id="waiting-count">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"></div>
+                        <div class="stat-content">
+                            <div class="stat-label">Completed</div>
+                            <div class="stat-value" id="completed-count">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"></div>
+                        <div class="stat-content">
+                            <div class="stat-label">No Show</div>
+                            <div class="stat-value" id="no-show-count">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-controls">
+                    <button id="reset-queue-btn" class="btn btn-warning">Reset Queue</button>
+                    <button id="export-logs-btn" class="btn btn-primary">Export Logs</button>
+                </div>
+
+                
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then((registration) => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, (err) => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+        });
+    }
+</script>
+</body>
+</html>
